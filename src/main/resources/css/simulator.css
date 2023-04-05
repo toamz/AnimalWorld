@@ -1,0 +1,25 @@
+.button{
+    -fx-background-color: #e8e8e8;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-border-color: #ffffff;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px;
+    -fx-cursor: hand;
+}
+
+.button:hover{
+    -fx-background-color: #d3d3d3;
+}
+
+.button:pressed{
+    -fx-background-color: #a9a9a9;
+}
+
+.sidebar{
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ffffff;
+    -fx-padding: 10px;
+}

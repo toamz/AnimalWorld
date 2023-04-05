@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="400.0" prefWidth="600.0" styleClass="" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.cvut.fel.zahorto2.animalworld.Controler.Simulator">
+    <stylesheets>
+        <URL value="@/css/simulator.css" />
+    </stylesheets>
+    <center>
+        <Canvas />
+    </center>
+   <right>
+      <VBox styleClass="sidebar">
+         <Button onAction="#startButtonEvent" prefWidth="100" text="Start" />
+         <Button onAction="#stepButtonEvent" prefWidth="100" text="Step" />
+          <Button onAction="#pauseButtonEvent" prefWidth="100" text="Pause" />
+          <Button onAction="#resumeButtonEvent" prefWidth="100" text="Resume" />
+          <Button onAction="#stopButtonEvent" prefWidth="100" text="Stop" />
+          <Button onAction="#saveButtonEvent" prefWidth="100" text="Save" />
+          <Button onAction="#loadButtonEvent" prefWidth="100" text="Load" />
+      </VBox>
+   </right>
+</BorderPane>
