@@ -12,7 +12,7 @@ public class App extends Application {
     }
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/mainMenu.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/simulator.fxml"));
         Parent root = fxmlLoader.load();
         stage.setTitle("Animal World");
         stage.setScene(new Scene(root, 300, 275));
