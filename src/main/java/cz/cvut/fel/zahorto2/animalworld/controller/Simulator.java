@@ -1,6 +1,20 @@
-package cz.cvut.fel.zahorto2.animalworld.Controler;
+package cz.cvut.fel.zahorto2.animalworld.controller;
+
+import cz.cvut.fel.zahorto2.animalworld.model.World;
+import cz.cvut.fel.zahorto2.animalworld.view.WorldRenderer;
+import javafx.fxml.FXML;
 
 public class Simulator {
+    private final World world = new World(20, 20);
+    @FXML
+    public WorldRenderer renderer;
+
+    @FXML
+    public void initialize() {
+        renderer.setWorld(world);
+        System.err.println("Simulator created");
+    }
+
     public void startButtonEvent() {
         System.out.println("Start button pressed");
     }

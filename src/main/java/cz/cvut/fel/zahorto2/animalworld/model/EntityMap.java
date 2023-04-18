@@ -1,6 +1,7 @@
-package cz.cvut.fel.zahorto2.animalworld.Model;
+package cz.cvut.fel.zahorto2.animalworld.model;
 
-import java.awt.*;
+import cz.cvut.fel.zahorto2.animalworld.CoordInt;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ public class EntityMap {
     private final int width;
     private final int height;
     private final Entity[][] entities;
-    private final Map<Entity, Point> entityPositions;
+    private final Map<Entity, CoordInt> entityPositions;
 
     /**
      * Creates a new entity map with the given dimensions.
@@ -46,7 +47,7 @@ public class EntityMap {
      * @param entity the entity
      * @return the position of the entity, or null if the entity is not in the world
      */
-    public Point getEntityPosition(Entity entity) {
+    public CoordInt getEntityPosition(Entity entity) {
         return entityPositions.get(entity);
     }
 
@@ -69,8 +70,8 @@ public class EntityMap {
         }
 
         if (entityPositions.containsKey(entity))
-            entities[entityPositions.get(entity).x][entityPositions.get(entity).y] = null;
-        entityPositions.put(entity, new Point(x, y));
+            entities[entityPositions.get(entity).getX()][entityPositions.get(entity).getY()] = null;
+        entityPositions.put(entity, new CoordInt(x, y));
         entities[x][y] = entity;
     }
 

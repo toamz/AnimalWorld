@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
-<?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import cz.cvut.fel.zahorto2.animalworld.view.WorldRenderer?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" styleClass="" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.cvut.fel.zahorto2.animalworld.Controler.Simulator">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.cvut.fel.zahorto2.animalworld.controller.Simulator">
     <stylesheets>
         <URL value="@/css/simulator.css" />
     </stylesheets>
     <center>
-        <Canvas />
+        <WorldRenderer fx:id="renderer" />
     </center>
    <right>
       <VBox styleClass="sidebar">

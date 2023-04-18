@@ -1,4 +1,4 @@
-package cz.cvut.fel.zahorto2.animalworld.Model;
+package cz.cvut.fel.zahorto2.animalworld.model;
 
 /**
  * World of the simulation.
@@ -21,5 +21,21 @@ public class World {
         this.width = width;
         this.height = height;
         this.entityMap = new EntityMap(width, height);
+    }
+
+    /**
+     * Returns the width of the world.
+     * @return the width of the world
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Returns the height of the world.
+     * @return the height of the world
+     */
+    public int getHeight() {
+        return height;
     }
 }

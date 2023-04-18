@@ -1,4 +1,4 @@
-package cz.cvut.fel.zahorto2.animalworld.Controler;
+package cz.cvut.fel.zahorto2.animalworld.controller;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
