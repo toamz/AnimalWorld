@@ -1,5 +1,7 @@
 package cz.cvut.fel.zahorto2.animalworld.model;
 
+import cz.cvut.fel.zahorto2.animalworld.model.tiles.TileType;
+
 /**
  * World of the simulation.
  */
@@ -8,6 +10,7 @@ public class World {
     private final int height;
 
     private final EntityMap entityMap;
+    private final TileGrid tileGrid;
 
     /**
      * Creates a new world with the given dimensions.
@@ -21,6 +24,7 @@ public class World {
         this.width = width;
         this.height = height;
         this.entityMap = new EntityMap(width, height);
+        this.tileGrid = new TileGrid(width, height, TileType.GRASS);
     }
 
     /**
