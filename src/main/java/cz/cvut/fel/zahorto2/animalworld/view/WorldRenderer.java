@@ -2,6 +2,8 @@ package cz.cvut.fel.zahorto2.animalworld.view;
 
 import cz.cvut.fel.zahorto2.animalworld.CoordDouble;
 import cz.cvut.fel.zahorto2.animalworld.model.World;
+import cz.cvut.fel.zahorto2.animalworld.model.entities.Entity;
+import cz.cvut.fel.zahorto2.animalworld.view.entities.EntityRenderer;
 import cz.cvut.fel.zahorto2.animalworld.view.tiles.TileRenderer;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -31,6 +33,7 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         gc.transform(transform);
         drawTiles(gc);
         drawGrid(gc);
+        drawEntities(gc);
         gc.restore();
     }
 
@@ -66,6 +69,20 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
             gc.translate(0, 1);
         }
         gc.restore();
+    }
+
+    void drawEntities(GraphicsContext gc) {
+        for (int x = 0; x < world.getWidth(); x++) {
+            for (int y = 0; y < world.getHeight(); y++) {
+                Entity entity = world.getEntityMap().getEntity(x, y);
+                if (entity == null) continue;
+
+                gc.save();
+                gc.translate(x, y);
+                EntityRenderer.render(entity, gc);
+                gc.restore();
+            }
+        }
     }
 
     void handleScrollEvent(ScrollEvent scrollEvent) {
