@@ -42,4 +42,20 @@ public class World {
     public int getHeight() {
         return height;
     }
+
+    /**
+     * Returns entity map.
+     * @return entity map
+     */
+    public EntityMap getEntityMap() {
+        return entityMap;
+    }
+
+    /**
+     * Returns tile grid.
+     * @return tile grid
+     */
+    public TileGrid getTileGrid() {
+        return tileGrid;
+    }
 }

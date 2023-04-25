@@ -2,12 +2,15 @@ package cz.cvut.fel.zahorto2.animalworld.view;
 
 import cz.cvut.fel.zahorto2.animalworld.CoordDouble;
 import cz.cvut.fel.zahorto2.animalworld.model.World;
+import cz.cvut.fel.zahorto2.animalworld.view.tiles.TileRenderer;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Affine;
 
 public class WorldRenderer extends ResizableCanvas implements EventHandler<Event> {
     public WorldRenderer() {
@@ -16,52 +19,61 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         this.addEventHandler(MouseEvent.MOUSE_DRAGGED, this);
         this.addEventHandler(MouseEvent.MOUSE_PRESSED, this);
         this.addEventHandler(MouseEvent.MOUSE_RELEASED, this);
+        transform.appendScale(10, 10);
     }
-    CoordDouble offset = new CoordDouble(0, 0);
-    double scale = 20;
+    Affine transform = new Affine();
     private World world;
     void draw() {
         GraphicsContext gc = this.getGraphicsContext2D();
         gc.clearRect(0, 0, this.getWidth(), this.getHeight());
-        gc.setFill(Color.BLACK);
 
+        gc.save();
+        gc.transform(transform);
+        drawTiles(gc);
         drawGrid(gc);
+        gc.restore();
     }
 
     CoordDouble viewToMapCoord(CoordDouble canvasPos) {
-        return CoordDouble.add(canvasPos.multiply(1 / scale), offset);
-    }
-
-    CoordDouble mapToViewCoord(CoordDouble mapPos) {
-        return CoordDouble.subtract(mapPos, offset).multiply(scale);
+        try {
+            Point2D result = transform.inverseTransform(canvasPos.x, canvasPos.y);
+            return new CoordDouble(result.getX(), result.getY());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     void drawGrid(GraphicsContext gc) {
-
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(0.02);
         for (double x = 0; x < world.getWidth() + 1; x += 1) {
-            CoordDouble lineStart = mapToViewCoord(new CoordDouble(x, 0));
-            CoordDouble lineEnd = mapToViewCoord(new CoordDouble(x, world.getHeight()));
-            gc.strokeLine(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y);
+            gc.strokeLine(x, 0, x, world.getHeight());
         }
         for (double y = 0; y < world.getHeight() + 1; y += 1) {
-            CoordDouble lineStart = mapToViewCoord(new CoordDouble(0, y));
-            CoordDouble lineEnd = mapToViewCoord(new CoordDouble(world.getWidth(), y));
-            gc.strokeLine(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y);
+            gc.strokeLine(0, y, world.getWidth(), y);
         }
+    }
+
+    void drawTiles(GraphicsContext gc) {
+        gc.save();
+        for (int x = 0; x < world.getWidth(); x++) {
+            gc.save();
+            for (int y = 0; y < world.getHeight(); y++) {
+                TileRenderer.render(world.getTileGrid().getTile(x, y), gc);
+                gc.translate(1, 0);
+            }
+            gc.restore();
+            gc.translate(0, 1);
+        }
+        gc.restore();
     }
 
     void handleScrollEvent(ScrollEvent scrollEvent) {
         CoordDouble mousePos = viewToMapCoord(new CoordDouble(scrollEvent.getX(), scrollEvent.getY()));
         double zoomFactor = scrollEvent.getDeltaY() * 0.001 + 1;
-        double oldScale = scale;
-        scale *= zoomFactor;
-        scale = Math.max(5, scale);
-        scale = Math.min(500, scale);
-        zoomFactor = scale / oldScale;
-
-        offset.subtract(mousePos);
-        offset.multiply(1/zoomFactor);
-        offset.add(mousePos);
+        transform.appendTranslation(mousePos.x, mousePos.y);
+        transform.appendScale(zoomFactor, zoomFactor);
+        transform.appendTranslation(-mousePos.x, -mousePos.y);
         draw();
         System.out.println("Zoomed " + zoomFactor);
     }
@@ -82,9 +94,9 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
             if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED && dragLast != null) {
                 CoordDouble mousePos = new CoordDouble(mouseEvent.getX(), mouseEvent.getY());
                 CoordDouble delta = CoordDouble.subtract(mousePos, dragLast);
-                offset = CoordDouble.subtract(offset, CoordDouble.multiply(delta, 1 / scale));
-                draw();
                 dragLast = mousePos;
+                transform.appendTranslation(delta.x, delta.y);
+                draw();
             }
             CoordDouble mousePos = new CoordDouble(mouseEvent.getX(), mouseEvent.getY());
             CoordDouble mapPos = viewToMapCoord(mousePos);
