@@ -1,9 +1,9 @@
 package cz.cvut.fel.zahorto2.animalworld.model;
 
 import cz.cvut.fel.zahorto2.animalworld.CoordInt;
+import cz.cvut.fel.zahorto2.animalworld.model.entities.Entity;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A map of entities.
@@ -13,6 +13,7 @@ public class EntityMap {
     private final int height;
     private final Entity[][] entities;
     private final Map<Entity, CoordInt> entityPositions;
+    private final Random random = new Random();
 
     /**
      * Creates a new entity map with the given dimensions.
@@ -60,7 +61,7 @@ public class EntityMap {
      * @throws IllegalArgumentException if the position is out of bounds or already occupied
      * @throws NullPointerException if the entity is null
      */
-    public void addEntity(Entity entity, int x, int y) {
+    public void setEntity(Entity entity, int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height)
             throw new IllegalArgumentException("Entity position out of bounds");
 
@@ -89,4 +90,43 @@ public class EntityMap {
         }
     }
 
+    public CoordInt[] getNeighbours(CoordInt position) {
+        int x = position.x;
+        int y = position.y;
+        CoordInt[] neighbours = new CoordInt[] {
+                new CoordInt(x - 1, y),
+                new CoordInt(x, y - 1),
+                new CoordInt(x, y + 1),
+                new CoordInt(x + 1, y)
+        };
+
+        ArrayList<CoordInt> validNeighbours = new ArrayList<>(neighbours.length);
+        for (CoordInt neighbour : neighbours) {
+            if (neighbour.x < 0 || neighbour.x >= width || neighbour.y < 0 || neighbour.y >= height)
+                continue;
+            validNeighbours.add(neighbour);
+        }
+
+        return validNeighbours.toArray(new CoordInt[0]);
+    }
+
+    public CoordInt getRandomEmptyNeighbour(CoordInt position) {
+        CoordInt[] neighbours = this.getNeighbours(position);
+
+        CoordInt[] emptyNeighbours = new CoordInt[4];
+        int emptyNeighboursCount = 0;
+        for (CoordInt neighbour : neighbours) {
+            if (entities[neighbour.x][neighbour.y] == null)
+                emptyNeighbours[emptyNeighboursCount++] = neighbour;
+        }
+
+        if (emptyNeighboursCount == 0)
+            return null;
+        return emptyNeighbours[random.nextInt(emptyNeighboursCount)];
+    }
+
+    public CoordInt getRandomNeighbour(CoordInt position) {
+        CoordInt[] neighbours = this.getNeighbours(position);
+        return neighbours[random.nextInt(neighbours.length)];
+    }
 }
