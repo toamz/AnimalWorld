@@ -41,12 +41,12 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         for (double x = 0; x < world.getWidth() + 1; x += 1) {
             CoordDouble lineStart = mapToViewCoord(new CoordDouble(x, 0));
             CoordDouble lineEnd = mapToViewCoord(new CoordDouble(x, world.getHeight()));
-            gc.strokeLine(lineStart.getX(), lineStart.getY(), lineEnd.getX(), lineEnd.getY());
+            gc.strokeLine(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y);
         }
         for (double y = 0; y < world.getHeight() + 1; y += 1) {
             CoordDouble lineStart = mapToViewCoord(new CoordDouble(0, y));
             CoordDouble lineEnd = mapToViewCoord(new CoordDouble(world.getWidth(), y));
-            gc.strokeLine(lineStart.getX(), lineStart.getY(), lineEnd.getX(), lineEnd.getY());
+            gc.strokeLine(lineStart.x, lineStart.y, lineEnd.x, lineEnd.y);
         }
     }
 
@@ -88,7 +88,7 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
             }
             CoordDouble mousePos = new CoordDouble(mouseEvent.getX(), mouseEvent.getY());
             CoordDouble mapPos = viewToMapCoord(mousePos);
-            System.out.printf("Moved   : %2.2f, %2.2f : %2.2f, %2.2f%n", mousePos.getX(), mousePos.getY(), mapPos.getX(), mapPos.getY());
+            System.out.printf("Moved   : %2.2f, %2.2f : %2.2f, %2.2f%n", mousePos.x, mousePos.y, mapPos.x, mapPos.y);
         }
     }
 

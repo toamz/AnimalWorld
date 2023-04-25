@@ -69,8 +69,10 @@ public class EntityMap {
             return;
         }
 
-        if (entityPositions.containsKey(entity))
-            entities[entityPositions.get(entity).getX()][entityPositions.get(entity).getY()] = null;
+        if (entityPositions.containsKey(entity)){
+            CoordInt oldPosition = entityPositions.get(entity);
+            entities[oldPosition.x][oldPosition.y] = null;
+        }
         entityPositions.put(entity, new CoordInt(x, y));
         entities[x][y] = entity;
     }

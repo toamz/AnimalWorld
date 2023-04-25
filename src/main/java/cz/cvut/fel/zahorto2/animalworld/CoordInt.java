@@ -1,8 +1,8 @@
 package cz.cvut.fel.zahorto2.animalworld;
 
 public class CoordInt {
-    private int x;
-    private int y;
+    public int x;
+    public int y;
 
     public CoordInt(int x, int y) {
         this.x = x;
@@ -10,13 +10,6 @@ public class CoordInt {
     }
     public CoordInt copy() {
         return new CoordInt(x, y);
-    }
-
-    public void setX(int x) { this.x = x; }
-    public void setY(int y) { this.y = y; }
-    public int getX() { return this.x; }
-    public int getY() {
-        return this.y;
     }
 
     public CoordInt add(CoordInt other) {
