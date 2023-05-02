@@ -124,7 +124,7 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
                 CoordDouble mousePos = new CoordDouble(mouseEvent.getX(), mouseEvent.getY());
                 CoordDouble delta = CoordDouble.subtract(mousePos, dragLast);
                 dragLast = mousePos;
-                transform.appendTranslation(delta.x, delta.y);
+                transform.prependTranslation(delta.x, delta.y);
             }
             CoordDouble mousePos = new CoordDouble(mouseEvent.getX(), mouseEvent.getY());
             CoordDouble mapPos = viewToMapCoord(mousePos);
