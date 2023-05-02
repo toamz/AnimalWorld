@@ -29,7 +29,7 @@ public abstract class Animal implements Entity {
             this.die();
             return;
         }
-        if (this.eat()) {
+        if (energy < MAX_ENERGY - 10 && this.eat()) {
             energy += 10;
             return;
         }
