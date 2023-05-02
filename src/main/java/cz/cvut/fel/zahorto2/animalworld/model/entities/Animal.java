@@ -27,6 +27,7 @@ public abstract class Animal implements Entity {
 
         if (energy <= 0 || age >= MAX_AGE) {
             this.die();
+            return;
         }
         if (this.eat()) {
             energy += 10;
@@ -90,6 +91,9 @@ public abstract class Animal implements Entity {
         CoordInt otherPosition = world.getEntityMap().getRandomNeighbour(position);
         if (otherPosition != null) {
             Entity other = world.getEntityMap().getEntity(otherPosition.x, otherPosition.y);
+            if (other == null) {
+                return false;
+            }
             if (other.getClass() == this.getClass()) {
                 CoordInt babyPosition = world.getEntityMap().getRandomEmptyNeighbour(position);
                 if (babyPosition != null) {

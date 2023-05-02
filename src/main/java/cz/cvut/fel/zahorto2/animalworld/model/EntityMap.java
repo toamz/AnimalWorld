@@ -66,6 +66,7 @@ public class EntityMap {
             throw new IllegalArgumentException("Entity position out of bounds");
 
         if (entity == null) {
+            entityPositions.remove(entities[x][y]);
             entities[x][y] = null;
             return;
         }
@@ -74,6 +75,9 @@ public class EntityMap {
             CoordInt oldPosition = entityPositions.get(entity);
             entities[oldPosition.x][oldPosition.y] = null;
         }
+        if (entities[x][y] != null)
+            throw new IllegalArgumentException("Entity position already occupied");
+
         entityPositions.put(entity, new CoordInt(x, y));
         entities[x][y] = entity;
     }
@@ -86,6 +90,8 @@ public class EntityMap {
         // make a copy of the entities to avoid concurrent modification
         Entity[] entitiesCopy = entityPositions.keySet().toArray(new Entity[0]);
         for (Entity entity : entitiesCopy) {
+            if (!entityPositions.containsKey(entity)) // something might have killed the entity
+                continue;
             entity.tick();
         }
     }
