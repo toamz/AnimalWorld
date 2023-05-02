@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 public class GrassRenderer {
     private GrassRenderer() {}
     public static void render(Grass tile, GraphicsContext graphicsContext) {
-        graphicsContext.setFill(Color.GREEN);
+        graphicsContext.setFill(Color.rgb(0, 255, 0, Math.min(tile.getAge() / 10.0, 1)));
         graphicsContext.setLineWidth(0);
         graphicsContext.fillRect(0, 0, 1, 1);
     }

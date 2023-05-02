@@ -26,4 +26,8 @@ public class Grass implements Tile {
         }
         return false;
     }
+
+    public int getAge() {
+        return age;
+    }
 }
