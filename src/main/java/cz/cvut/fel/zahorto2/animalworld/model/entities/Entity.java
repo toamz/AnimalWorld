@@ -1,6 +1,8 @@
 package cz.cvut.fel.zahorto2.animalworld.model.entities;
 
-public interface Entity {
+import java.io.Serializable;
+
+public interface Entity extends Serializable {
     /**
      * Called every tick.
      */

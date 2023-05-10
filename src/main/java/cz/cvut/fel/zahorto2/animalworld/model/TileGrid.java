@@ -3,13 +3,17 @@ package cz.cvut.fel.zahorto2.animalworld.model;
 import cz.cvut.fel.zahorto2.animalworld.model.tiles.Tile;
 import cz.cvut.fel.zahorto2.animalworld.model.tiles.TileType;
 
+import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * A tile grid.
  */
-public class TileGrid {
-    private final int width;
-    private final int height;
-    private final Tile[][] tiles;
+public class TileGrid implements Serializable {
+    private int width;
+    private int height;
+    private Tile[][] tiles;
 
     /**
      * Creates a new tile grid with the given dimensions.
@@ -69,5 +73,24 @@ public class TileGrid {
         for (Tile[] row : tiles)
             for (Tile tile : row)
                 tile.tick();
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    @Serial
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        out.writeObject(tiles);
+    }
+    @Serial
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        tiles = (Tile[][]) in.readObject();
+        width = tiles.length;
+        height = tiles[0].length;
     }
 }

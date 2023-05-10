@@ -2,15 +2,19 @@ package cz.cvut.fel.zahorto2.animalworld.model;
 
 import cz.cvut.fel.zahorto2.animalworld.model.tiles.TileType;
 
+import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * World of the simulation.
  */
-public class World {
-    private final int width;
-    private final int height;
+public class World implements Serializable {
+    private int width;
+    private int height;
 
-    private final EntityMap entityMap;
-    private final TileGrid tileGrid;
+    private EntityMap entityMap;
+    private TileGrid tileGrid;
 
     /**
      * Creates a new world with the given dimensions.
@@ -57,5 +61,22 @@ public class World {
      */
     public TileGrid getTileGrid() {
         return tileGrid;
+    }
+
+    @Serial
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        out.writeObject(entityMap);
+        out.writeObject(tileGrid);
+    }
+    @Serial
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        entityMap = (EntityMap) in.readObject();
+        tileGrid = (TileGrid) in.readObject();
+
+        width = tileGrid.getWidth();
+        height = tileGrid.getHeight();
+
+        assert width == entityMap.getWidth();
+        assert height == entityMap.getHeight();
     }
 }

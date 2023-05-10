@@ -3,17 +3,20 @@ package cz.cvut.fel.zahorto2.animalworld.model;
 import cz.cvut.fel.zahorto2.animalworld.CoordInt;
 import cz.cvut.fel.zahorto2.animalworld.model.entities.Entity;
 
+import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * A map of entities.
  */
-public class EntityMap {
-    private final int width;
-    private final int height;
-    private final Entity[][] entities;
-    private final Map<Entity, CoordInt> entityPositions;
-    private final Random random = new Random();
+public class EntityMap implements Serializable {
+    private int width;
+    private int height;
+    private Entity[][] entities;
+    private Map<Entity, CoordInt> entityPositions;
+    private Random random = new Random();
 
     /**
      * Creates a new entity map with the given dimensions.
@@ -134,5 +137,33 @@ public class EntityMap {
     public CoordInt getRandomNeighbour(CoordInt position) {
         CoordInt[] neighbours = this.getNeighbours(position);
         return neighbours[random.nextInt(neighbours.length)];
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    @Serial
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        out.writeObject(entities);
+    }
+    @Serial
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        entities = (Entity[][]) in.readObject();
+        entityPositions = new HashMap<>();
+        for (int x = 0; x < entities.length; x++) {
+            for (int y = 0; y < entities[x].length; y++) {
+                if (entities[x][y] != null)
+                    entityPositions.put(entities[x][y], new CoordInt(x, y));
+            }
+        }
+        width = entities.length;
+        height = entities[0].length;
+
+        random = new Random();
     }
 }

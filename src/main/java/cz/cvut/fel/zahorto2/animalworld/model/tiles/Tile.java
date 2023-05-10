@@ -1,9 +1,11 @@
 package cz.cvut.fel.zahorto2.animalworld.model.tiles;
 
+import java.io.Serializable;
+
 /**
  * A tile in the world.
  */
-public interface Tile {
+public interface Tile extends Serializable {
     /**
      * Called every tick.
      */
