@@ -1,5 +1,8 @@
 package cz.cvut.fel.zahorto2.animalworld.model;
 
+import cz.cvut.fel.zahorto2.animalworld.model.entities.EntityType;
+import cz.cvut.fel.zahorto2.animalworld.model.tiles.TileType;
+
 import java.io.*;
 
 /**
@@ -8,6 +11,8 @@ import java.io.*;
 public class WorldLoader {
     private WorldLoader() {}
     public static final String BINARY_FILE_EXTENSION = "world";
+    public static final String TEXT_FILE_EXTENSION = "tworld";
+    public static final char TEXT_FILE_SEPARATOR = ';';
 
     /**
      * Loads a world from a binary file.
@@ -18,6 +23,9 @@ public class WorldLoader {
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             return (World) objectInputStream.readObject();
+        } catch (StreamCorruptedException e) {
+            System.err.println("File is not a world file, trying to load as text file");
+            return loadText(file);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -36,5 +44,39 @@ public class WorldLoader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Loads a world from a text file.
+     * @param file File to load from.
+     */
+    public static World loadText(File file) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            String line = bufferedReader.readLine();
+            String[] dimensions = line.split(TEXT_FILE_SEPARATOR + "");
+            int width = Integer.parseInt(dimensions[0]);
+            int height = Integer.parseInt(dimensions[1]);
+
+            if (width <= 0 || height <= 0) {
+                throw new IOException("Invalid world dimensions");
+            }
+
+            World world = new World(width, height);
+            for (int y = 0; y < height; y++) {
+                line = bufferedReader.readLine();
+                String[] tiles = line.split(TEXT_FILE_SEPARATOR + "", -1);
+                for (int x = 0; x < width; x++) {
+                    world.getTileGrid().setTile(TileType.valueOf(tiles[x * 2]).createTile(), x, y);
+                    String entity = tiles[x * 2 + 1];
+                    if (!entity.equals("")) {
+                        world.getEntityMap().setEntity(EntityType.valueOf(entity).createEntity(world), x, y);
+                    }
+                }
+            }
+            return world;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

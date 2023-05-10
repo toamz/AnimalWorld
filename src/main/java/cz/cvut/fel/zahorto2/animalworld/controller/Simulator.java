@@ -47,8 +47,10 @@ public class Simulator {
         simulationThread.start();
         System.err.println("Simulator created");
 
-        String ext = WorldLoader.BINARY_FILE_EXTENSION;
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("World files (*.%s)".formatted(ext), "*.%s".formatted(ext)));
+        String bin = WorldLoader.BINARY_FILE_EXTENSION;
+        String text = WorldLoader.TEXT_FILE_EXTENSION;
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("World files (*.%s)".formatted(bin), "*.%s".formatted(bin)));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("World text files (*.%s)".formatted(text), "*.%s".formatted(text)));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All files (*.*)", "*.*"));
 
         renderer.sceneProperty().addListener((observable, oldValue, newValue) -> {
@@ -97,7 +99,7 @@ public class Simulator {
         System.out.println("Step button pressed");
         speed.singleStep();
     }
-    public void saveButtonEvent() throws IOException {
+    public void saveButtonEvent() {
         System.out.println("Save button pressed");
 
         fileChooser.setTitle("Save World File");
