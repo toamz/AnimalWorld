@@ -1,32 +1,29 @@
 package cz.cvut.fel.zahorto2.animalworld.controller;
 
+import javafx.beans.property.SimpleFloatProperty;
+
 /**
  * Class for controlling the speed of the simulation.
  * The speed is measured in ticks per second.
  */
 public class SimulationSpeed {
-    private float speed;
+    public final SimpleFloatProperty speedProperty = new SimpleFloatProperty();
     private boolean singleStep = false;
     SimulationSpeed(float speed)
     {
-        this.speed = speed;
-    }
-    public synchronized void setSpeed(float speed)
-    {
-        this.speed = speed;
-        notifyAll();
+        this.speedProperty.set(speed);
+        this.speedProperty.addListener((observable, oldValue, newValue) -> {
+            synchronized (this) {
+                notifyAll();
+            }
+        });
     }
     public synchronized void singleStep()
     {
-        this.speed = 0;
+        this.speedProperty.set(0);
         this.singleStep = true;
         notifyAll();
     }
-    public synchronized float getSpeed()
-    {
-        return speed;
-    }
-
     public synchronized void delay() throws InterruptedException
     {
         long start = System.currentTimeMillis();
@@ -37,11 +34,12 @@ public class SimulationSpeed {
                 singleStep = false;
                 return;
             }
-            if (speed == 0) {
+            float currentSpeed = this.speedProperty.get();
+            if (currentSpeed == 0) {
                 wait();
                 continue;
             }
-            long end = start + 1000 / (long) speed;
+            long end = (long) (start + 1000.0 / currentSpeed);
             if (System.currentTimeMillis() >= end)
                 return;
             wait(end - System.currentTimeMillis());

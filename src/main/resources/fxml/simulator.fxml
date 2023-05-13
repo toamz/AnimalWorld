@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import cz.cvut.fel.zahorto2.animalworld.view.WorldRenderer?>
@@ -12,15 +13,23 @@
     <center>
         <WorldRenderer fx:id="renderer" />
     </center>
-   <right>
-      <VBox styleClass="sidebar">
-         <Button onAction="#startButtonEvent" prefWidth="100" text="Start" />
-         <Button onAction="#stepButtonEvent" prefWidth="100" text="Step" />
-          <Button onAction="#pauseButtonEvent" prefWidth="100" text="Pause" />
-          <Button onAction="#resumeButtonEvent" prefWidth="100" text="Resume" />
-          <Button onAction="#stopButtonEvent" prefWidth="100" text="Stop" />
-          <Button onAction="#saveButtonEvent" prefWidth="100" text="Save" />
-          <Button onAction="#loadButtonEvent" prefWidth="100" text="Load" />
-      </VBox>
-   </right>
+    <top>
+        <HBox styleClass="sidebar" maxWidth="Infinity" alignment="BOTTOM_LEFT">
+            <HBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
+                <Label text="Speed:">
+                    <padding>
+                        <Insets right="15" bottom="22" />
+                    </padding>
+                </Label>
+                <Slider maxWidth="520" HBox.hgrow="ALWAYS" fx:id="speedSlider" showTickMarks="true" showTickLabels="true" minorTickCount="10" majorTickUnit="10" max="50"/>
+            </HBox>
+            <HBox HBox.hgrow="NEVER">
+                <Button onAction="#startButtonEvent" text="Start"/>
+                <Button onAction="#stepButtonEvent" text="Step"/>
+                <Button onAction="#stopButtonEvent" text="Stop"/>
+                <Button onAction="#saveButtonEvent" text="Save"/>
+                <Button onAction="#loadButtonEvent" text="Load"/>
+            </HBox>
+        </HBox>
+    </top>
 </BorderPane>

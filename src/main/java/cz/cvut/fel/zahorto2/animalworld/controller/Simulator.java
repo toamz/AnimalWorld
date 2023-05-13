@@ -4,10 +4,13 @@ import cz.cvut.fel.zahorto2.animalworld.model.World;
 import cz.cvut.fel.zahorto2.animalworld.model.WorldLoader;
 import cz.cvut.fel.zahorto2.animalworld.view.WorldRenderer;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
+import javafx.scene.control.Slider;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import javafx.util.converter.DoubleStringConverter;
 
 import java.io.*;
 
@@ -19,6 +22,8 @@ public class Simulator {
     SimulationSpeed speed = new SimulationSpeed(0);
     @FXML
     public WorldRenderer renderer;
+    @FXML
+    public Slider speedSlider;
     private final FileChooser fileChooser = new FileChooser();
     private Window window;
 
@@ -36,7 +41,6 @@ public class Simulator {
                 world.getEntityMap().tick();
                 world.getTileGrid().tick();
             }
-            System.out.println("Tick");
         }
     }
 
@@ -55,45 +59,75 @@ public class Simulator {
 
         renderer.sceneProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                window = newValue.getWindow();
-
-                newValue.setOnDragOver(event -> {
-                    System.out.println("Drag over");
-                    Dragboard db = event.getDragboard();
-                    if (db.hasFiles()) {
-                        event.acceptTransferModes(TransferMode.LINK);
-                    }
-                    event.consume();
-                });
-
-                newValue.setOnDragDropped(event -> {
-                    System.out.println("Drag dropped");
-                    Dragboard db = event.getDragboard();
-                    if (db.hasFiles()) {
-                        System.out.println("File dropped");
-                        File file = db.getFiles().get(0);
-                        System.out.println(file.getAbsolutePath());
-                        loadWorld(file);
-                    }
-                    event.setDropCompleted(true);
-                });
+                linkSceneAfterLoad(newValue);
             }
+        });
+
+        setupSpeedSlider();
+    }
+
+    private void setupSpeedSlider() {
+        speedSlider.setLabelFormatter(new DoubleStringConverter(){
+            @Override
+            public String toString(Double object) {
+                if (object == 0) {
+                    return "Paused";
+                }
+                if (object == speedSlider.getMax()) {
+                    return "Max";
+                }
+                return super.toString(object);
+            }
+        });
+        speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            float val = newValue.floatValue();
+            if (val == speedSlider.getMax()) {
+                speed.speedProperty.set(Float.POSITIVE_INFINITY);
+            } else {
+                speed.speedProperty.set(val);
+            }
+        });
+        speed.speedProperty.addListener((observable, oldValue, newValue) -> {
+            if (newValue.floatValue() == Float.POSITIVE_INFINITY) {
+                speedSlider.setValue(speedSlider.getMax());
+            } else {
+                speedSlider.setValue(newValue.floatValue());
+            }
+        });
+    }
+
+    void linkSceneAfterLoad(Scene scene){
+        window = scene.getWindow();
+
+        scene.setOnDragOver(event -> {
+            System.out.println("Drag over");
+            Dragboard db = event.getDragboard();
+            if (db.hasFiles()) {
+                event.acceptTransferModes(TransferMode.LINK);
+            }
+            event.consume();
+        });
+
+        scene.setOnDragDropped(event -> {
+            System.out.println("Drag dropped");
+            Dragboard db = event.getDragboard();
+            if (db.hasFiles()) {
+                System.out.println("File dropped");
+                File file = db.getFiles().get(0);
+                System.out.println(file.getAbsolutePath());
+                loadWorld(file);
+            }
+            event.setDropCompleted(true);
         });
     }
 
     public void startButtonEvent() {
         System.out.println("Start button pressed");
-        speed.setSpeed(Float.POSITIVE_INFINITY);
+        speed.speedProperty.set(Float.POSITIVE_INFINITY);
     }
     public void stopButtonEvent() {
         System.out.println("Stop button pressed");
-        speed.setSpeed(0);
-    }
-    public void pauseButtonEvent() {
-        System.out.println("Pause button pressed");
-    }
-    public void resumeButtonEvent() {
-        System.out.println("Resume button pressed");
+        speed.speedProperty.set(0);
     }
     public void stepButtonEvent() {
         System.out.println("Step button pressed");
@@ -127,7 +161,7 @@ public class Simulator {
     }
 
     void loadWorld(File file) {
-        speed.setSpeed(0);
+        speed.speedProperty.set(0);
         World newWorld = WorldLoader.load(file);
         if (newWorld != null) {
             synchronized (worldLock) {
