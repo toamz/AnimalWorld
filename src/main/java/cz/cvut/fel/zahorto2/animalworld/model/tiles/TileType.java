@@ -4,6 +4,7 @@ package cz.cvut.fel.zahorto2.animalworld.model.tiles;
  * Enum of all tile types.
  */
 public enum TileType {
+    WATER,
     GRASS;
 
     /**
@@ -12,6 +13,8 @@ public enum TileType {
      */
     public Tile createTile() {
         switch (this) {
+            case WATER:
+                return new Water();
             case GRASS:
                 return new Grass();
             default:

@@ -70,7 +70,7 @@ public abstract class Animal implements Entity {
     private void move() {
         CoordInt oldPosition = this.getPosition();
         CoordInt newPosition = world.getEntityMap().getRandomEmptyNeighbour(oldPosition);
-        if (newPosition != null) {
+        if (newPosition != null && world.getTileGrid().getTile(newPosition.x, newPosition.y).isWalkable()) {
             world.getEntityMap().setEntity(this, newPosition.x, newPosition.y);
         }
     }
@@ -89,7 +89,7 @@ public abstract class Animal implements Entity {
     private boolean reproduce() {
         CoordInt position = this.getPosition();
         CoordInt otherPosition = world.getEntityMap().getRandomNeighbour(position);
-        if (otherPosition != null) {
+        if (otherPosition != null && world.getTileGrid().getTile(otherPosition.x, otherPosition.y).isWalkable()) {
             Entity other = world.getEntityMap().getEntity(otherPosition.x, otherPosition.y);
             if (other == null) {
                 return false;
