@@ -1,7 +1,8 @@
 package cz.cvut.fel.zahorto2.animalworld.model.tiles;
 
 public class Grass implements Tile {
-    int age = 0;
+    public static final int EDIBLE_AGE = 100;
+    int age = EDIBLE_AGE;
 
     @Override
     public void tick() {
@@ -15,7 +16,7 @@ public class Grass implements Tile {
 
     @Override
     public boolean isEatable() {
-        return age > 10;
+        return age > EDIBLE_AGE;
     }
 
     @Override

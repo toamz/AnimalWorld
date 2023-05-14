@@ -3,6 +3,8 @@ package cz.cvut.fel.zahorto2.animalworld.model.entities;
 import cz.cvut.fel.zahorto2.animalworld.CoordInt;
 import cz.cvut.fel.zahorto2.animalworld.model.World;
 
+import java.util.Random;
+
 /**
  * Abstract class for all animals.
  * Each tick the animal ages and loses energy.
@@ -10,10 +12,9 @@ import cz.cvut.fel.zahorto2.animalworld.model.World;
  * It tries to eat grass, then reproduce, or move.
  */
 public abstract class Animal implements Entity {
-    private static final int MAX_AGE = 100;
+    Random random = new Random();
     private int age = 0;
-    private static final int MAX_ENERGY = 100;
-    private int energy = MAX_ENERGY;
+    private int energy = getStartEnergy();
     protected final World world;
 
     protected Animal(World world) {
@@ -25,15 +26,16 @@ public abstract class Animal implements Entity {
         age++;
         energy--;
 
-        if (energy <= 0 || age >= MAX_AGE) {
+        if (energy <= 0 || age >= getMaxAge()) {
             this.die();
             return;
         }
-        if (energy < MAX_ENERGY - 10 && this.eat()) {
-            energy += 10;
+        if (energy < getMaxEnergy() - getEatEnergy() && this.eat()) {
+            energy += getEatEnergy();
             return;
         }
-        if (this.reproduce()) {
+        if (energy > getStartEnergy() + 10 && this.reproduce()) {
+            energy -= getStartEnergy();
             return;
         }
         this.move();
@@ -87,6 +89,9 @@ public abstract class Animal implements Entity {
      * @return true if the baby was created, false otherwise
      */
     private boolean reproduce() {
+        if (age < getReproduceAge() || random.nextInt(getReproduceChance()) != 0) {
+            return false;
+        }
         CoordInt position = this.getPosition();
         CoordInt otherPosition = world.getEntityMap().getRandomNeighbour(position);
         if (otherPosition != null && world.getTileGrid().getTile(otherPosition.x, otherPosition.y).isWalkable()) {
@@ -112,5 +117,24 @@ public abstract class Animal implements Entity {
 
     public int getEnergy() {
         return energy;
+    }
+
+    protected int getMaxEnergy() {
+        return 100;
+    }
+    protected int getStartEnergy() {
+        return 20;
+    }
+    protected int getEatEnergy() {
+        return 15;
+    }
+    protected int getReproduceChance() {
+        return 10;
+    }
+    protected int getMaxAge() {
+        return 10000;
+    }
+    protected int getReproduceAge() {
+        return 1000;
     }
 }
