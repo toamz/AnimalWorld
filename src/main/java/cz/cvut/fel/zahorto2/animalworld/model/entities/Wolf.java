@@ -4,6 +4,12 @@ import cz.cvut.fel.zahorto2.animalworld.CoordInt;
 import cz.cvut.fel.zahorto2.animalworld.model.World;
 
 public class Wolf extends Animal {
+
+    @Override
+    public EntityType getType() {
+        return EntityType.WOLF;
+    }
+
     @Override
     protected int getEatEnergy() {
         return 200;

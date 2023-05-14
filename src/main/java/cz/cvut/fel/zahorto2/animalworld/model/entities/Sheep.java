@@ -9,6 +9,11 @@ public class Sheep extends Animal {
     }
 
     @Override
+    public EntityType getType() {
+        return EntityType.SHEEP;
+    }
+
+    @Override
     protected boolean eat() {
         CoordInt position = this.getPosition();
         return world.getTileGrid().getTile(position.x, position.y).beEaten();

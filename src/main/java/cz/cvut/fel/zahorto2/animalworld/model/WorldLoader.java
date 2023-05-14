@@ -38,6 +38,14 @@ public class WorldLoader {
      * @param file File to save to.
      */
     public static void save(World world, File file) {
+        if (file.getName().endsWith(TEXT_FILE_EXTENSION)) {
+            saveText(world, file);
+            return;
+        }
+        if (!file.getName().endsWith(BINARY_FILE_EXTENSION)) {
+            file = new File(file.getAbsolutePath() + "." + BINARY_FILE_EXTENSION);
+        }
+
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(world);
@@ -78,5 +86,22 @@ public class WorldLoader {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void saveText(World world, File file) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
+            bufferedWriter.write(String.format("%d%c%d%n", world.getWidth(), TEXT_FILE_SEPARATOR, world.getHeight()));
+            for (int y = 0; y < world.getHeight(); y++) {
+                for (int x = 0; x < world.getWidth(); x++) {
+                    bufferedWriter.write(world.getTileGrid().getTile(x, y).getType().name());
+                    bufferedWriter.write(TEXT_FILE_SEPARATOR);
+                    bufferedWriter.write(world.getEntityMap().getEntity(x, y) == null ? "" : world.getEntityMap().getEntity(x, y).getType().name());
+                    bufferedWriter.write(TEXT_FILE_SEPARATOR);
+                }
+                bufferedWriter.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

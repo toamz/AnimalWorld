@@ -5,6 +5,11 @@ public class Grass implements Tile {
     int age = EDIBLE_AGE;
 
     @Override
+    public TileType getType() {
+        return TileType.GRASS;
+    }
+
+    @Override
     public void tick() {
         age++;
     }

@@ -13,4 +13,6 @@ public interface Entity extends Serializable {
      * The entity should be removed from the world.
      */
     void die();
+
+    EntityType getType();
 }

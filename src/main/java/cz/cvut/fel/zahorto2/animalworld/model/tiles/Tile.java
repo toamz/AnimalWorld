@@ -1,6 +1,7 @@
 package cz.cvut.fel.zahorto2.animalworld.model.tiles;
 
 import java.io.Serializable;
+import java.net.ProtocolFamily;
 
 /**
  * A tile in the world.
@@ -29,4 +30,6 @@ public interface Tile extends Serializable {
      * @return true if the tile was eaten, false otherwise
      */
     boolean beEaten();
+
+    TileType getType();
 }

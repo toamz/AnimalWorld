@@ -1,6 +1,12 @@
 package cz.cvut.fel.zahorto2.animalworld.model.tiles;
 
 public class Water implements Tile {
+
+    @Override
+    public TileType getType() {
+        return TileType.WATER;
+    }
+
     @Override
     public void tick() {
         // do nothing
