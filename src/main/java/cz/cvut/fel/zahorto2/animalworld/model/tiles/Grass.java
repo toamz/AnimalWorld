@@ -21,7 +21,7 @@ public class Grass implements Tile {
 
     @Override
     public boolean isEatable() {
-        return age > EDIBLE_AGE;
+        return age >= EDIBLE_AGE;
     }
 
     @Override

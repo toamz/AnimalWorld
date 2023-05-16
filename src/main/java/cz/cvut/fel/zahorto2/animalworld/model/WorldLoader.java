@@ -96,7 +96,9 @@ public class WorldLoader {
                     bufferedWriter.write(world.getTileGrid().getTile(x, y).getType().name());
                     bufferedWriter.write(TEXT_FILE_SEPARATOR);
                     bufferedWriter.write(world.getEntityMap().getEntity(x, y) == null ? "" : world.getEntityMap().getEntity(x, y).getType().name());
-                    bufferedWriter.write(TEXT_FILE_SEPARATOR);
+                    if (x < world.getWidth() - 1) {
+                        bufferedWriter.write(TEXT_FILE_SEPARATOR);
+                    }
                 }
                 bufferedWriter.newLine();
             }
