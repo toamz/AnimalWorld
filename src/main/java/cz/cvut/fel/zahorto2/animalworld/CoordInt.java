@@ -34,4 +34,11 @@ public class CoordInt {
     public String toString() {
         return "[" + this.x + ", " + this.y + "]";
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof CoordInt otherCoord))
+            return false;
+        return this.x == otherCoord.x && this.y == otherCoord.y;
+    }
 }

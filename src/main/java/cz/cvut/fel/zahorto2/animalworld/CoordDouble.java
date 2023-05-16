@@ -40,4 +40,11 @@ public class CoordDouble {
     public String toString() {
         return "[" + this.x + ", " + this.y + "]";
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null || !(other instanceof CoordDouble otherCoord))
+            return false;
+        return this.x == otherCoord.x && this.y == otherCoord.y;
+    }
 }
