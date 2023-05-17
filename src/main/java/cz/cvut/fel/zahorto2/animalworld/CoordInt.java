@@ -41,4 +41,9 @@ public class CoordInt {
             return false;
         return this.x == otherCoord.x && this.y == otherCoord.y;
     }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(x) ^ Integer.hashCode(y);
+    }
 }

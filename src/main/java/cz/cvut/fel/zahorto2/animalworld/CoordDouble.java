@@ -48,4 +48,9 @@ public class CoordDouble {
             return false;
         return this.x == otherCoord.x && this.y == otherCoord.y;
     }
+
+    @Override
+    public int hashCode() {
+        return Double.hashCode(x) ^ Double.hashCode(y);
+    }
 }
