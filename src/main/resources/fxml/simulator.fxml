@@ -34,14 +34,15 @@
         </HBox>
     </top>
     <right>
-        <VBox styleClass="sidebar" maxWidth="Infinity">
-            <Label text="Statistics:"/>
+        <VBox styleClass="sidebar" maxWidth="Infinity" minWidth="220">
+            <Label styleClass="header" text="Statistics:"/>
+            <StatisticsLabel styleClass="text" fx:id="statisticsLabel"/>
 
-            <StatisticsLabel fx:id="statisticsLabel">
-                <padding>
-                    <Insets left="20" />
-                </padding>
-            </StatisticsLabel>
+            <Pane VBox.vgrow="ALWAYS" />
+
+            <Label styleClass="header">Controls:</Label>
+            <Label styleClass="text">Middle mouse drag - move view</Label>
+            <Label styleClass="text">Scroll - zoom view</Label>
         </VBox>
     </right>
 </BorderPane>
