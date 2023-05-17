@@ -1,7 +1,6 @@
 package cz.cvut.fel.zahorto2.animalworld.model.tiles;
 
 import java.io.Serializable;
-import java.net.ProtocolFamily;
 
 /**
  * A tile in the world.

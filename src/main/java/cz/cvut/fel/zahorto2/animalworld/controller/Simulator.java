@@ -3,6 +3,7 @@ package cz.cvut.fel.zahorto2.animalworld.controller;
 import cz.cvut.fel.zahorto2.animalworld.model.World;
 import cz.cvut.fel.zahorto2.animalworld.model.WorldLoader;
 import cz.cvut.fel.zahorto2.animalworld.view.WorldRenderer;
+import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Slider;
@@ -13,8 +14,12 @@ import javafx.stage.Window;
 import javafx.util.converter.DoubleStringConverter;
 
 import java.io.*;
+import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Simulator {
+    private static final Logger logger = LogManager.getFormatterLogger(Simulator.class.getName());
     private World world = new World(20, 20);
     private final Object worldLock = new Object();
     private final Thread simulationThread = new Thread(this::simulator);
@@ -32,7 +37,7 @@ public class Simulator {
             try {
                 speed.delay();
             } catch (InterruptedException e) {
-                System.err.println("Simulator interrupted");
+                logger.info("Simulation thread interrupted");
                 Thread.currentThread().interrupt();
                 return;
             }
@@ -49,7 +54,7 @@ public class Simulator {
         renderer.setWorld(world);
         simulationThread.setDaemon(true);
         simulationThread.start();
-        System.err.println("Simulator created");
+        logger.info("Simulator created");
 
         String bin = WorldLoader.BINARY_FILE_EXTENSION;
         String text = WorldLoader.TEXT_FILE_EXTENSION;
@@ -100,7 +105,7 @@ public class Simulator {
         window = scene.getWindow();
 
         scene.setOnDragOver(event -> {
-            System.out.println("Drag over");
+            logger.debug("Drag over");
             Dragboard db = event.getDragboard();
             if (db.hasFiles()) {
                 event.acceptTransferModes(TransferMode.LINK);
@@ -109,12 +114,11 @@ public class Simulator {
         });
 
         scene.setOnDragDropped(event -> {
-            System.out.println("Drag dropped");
+            logger.info("Drag dropped");
             Dragboard db = event.getDragboard();
             if (db.hasFiles()) {
-                System.out.println("File dropped");
+                logger.info("File dropped");
                 File file = db.getFiles().get(0);
-                System.out.println(file.getAbsolutePath());
                 loadWorld(file);
             }
             event.setDropCompleted(true);
@@ -122,19 +126,19 @@ public class Simulator {
     }
 
     public void startButtonEvent() {
-        System.out.println("Start button pressed");
+        logger.info("Start button pressed");
         speed.speedProperty.set(Float.POSITIVE_INFINITY);
     }
     public void stopButtonEvent() {
-        System.out.println("Stop button pressed");
+        logger.info("Stop button pressed");
         speed.speedProperty.set(0);
     }
     public void stepButtonEvent() {
-        System.out.println("Step button pressed");
+        logger.info("Step button pressed");
         speed.singleStep();
     }
     public void saveButtonEvent() {
-        System.out.println("Save button pressed");
+        logger.info("Save button pressed");
 
         fileChooser.setTitle("Save World File");
         fileChooser.setSelectedExtensionFilter(fileChooser.getExtensionFilters().get(0));
@@ -147,7 +151,7 @@ public class Simulator {
         WorldLoader.save(world, file);
     }
     public void loadButtonEvent() {
-        System.out.println("Load button pressed");
+        logger.info("Load button pressed");
 
         fileChooser.setTitle("Open World File");
         fileChooser.setSelectedExtensionFilter(fileChooser.getExtensionFilters().get(0));
@@ -161,6 +165,8 @@ public class Simulator {
     }
 
     void loadWorld(File file) {
+        logger.info("Loading world %s", file.getAbsolutePath());
+
         speed.speedProperty.set(0);
         World newWorld = WorldLoader.load(file);
         if (newWorld != null) {
@@ -168,5 +174,28 @@ public class Simulator {
                 world = newWorld;
                 renderer.setWorld(world);
             }
-        }}
+        }
+    }
+
+    public void setParameters(Application.Parameters parameters) {
+        logger.info("Setting parameters");
+
+        if (!parameters.getUnnamed().isEmpty()) {
+            loadWorld(new File(parameters.getUnnamed().get(0)));
+        }
+
+        for (Map.Entry<String, String> parameter : parameters.getNamed().entrySet()) {
+            switch (parameter.getKey()) {
+                case "speed" -> {
+                    try {
+                        logger.info("Setting speed to %s", parameter.getValue());
+                        speed.speedProperty.set(Float.parseFloat(parameter.getValue()));
+                    } catch (NumberFormatException e) {
+                        logger.warn("Invalid speed parameter %s", parameter.getValue());
+                    }
+                }
+                default -> logger.warn("Unknown parameter %s=%s", parameter.getKey(), parameter.getValue());
+            }
+        }
+    }
 }

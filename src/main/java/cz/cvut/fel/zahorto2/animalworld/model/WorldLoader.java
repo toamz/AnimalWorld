@@ -2,6 +2,8 @@ package cz.cvut.fel.zahorto2.animalworld.model;
 
 import cz.cvut.fel.zahorto2.animalworld.model.entities.EntityType;
 import cz.cvut.fel.zahorto2.animalworld.model.tiles.TileType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 
@@ -9,6 +11,7 @@ import java.io.*;
  * Loads and saves worlds from/to files in binary or text format.
  */
 public class WorldLoader {
+    private static final Logger logger = LogManager.getFormatterLogger(WorldLoader.class.getName());
     private WorldLoader() {}
     public static final String BINARY_FILE_EXTENSION = "world";
     public static final String TEXT_FILE_EXTENSION = "tworld";
@@ -22,12 +25,14 @@ public class WorldLoader {
     public static World load(File file) {
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            return (World) objectInputStream.readObject();
+            World world = (World) objectInputStream.readObject();
+            logger.info("Loaded world from binary file");
+            return world;
         } catch (StreamCorruptedException e) {
-            System.err.println("File is not a world file, trying to load as text file");
+            logger.warn("File is not a binary world file, trying to load as text file");
             return loadText(file);
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("Failed to load world from file", e);
         }
         return null;
     }
@@ -38,19 +43,24 @@ public class WorldLoader {
      * @param file File to save to.
      */
     public static void save(World world, File file) {
+        logger.info("Saving world to file %s", file.getAbsolutePath());
+
         if (file.getName().endsWith(TEXT_FILE_EXTENSION)) {
             saveText(world, file);
+            logger.info("Saved world to text file");
             return;
         }
         if (!file.getName().endsWith(BINARY_FILE_EXTENSION)) {
             file = new File(file.getAbsolutePath() + "." + BINARY_FILE_EXTENSION);
+            logger.warn("File name did not end with %s or %s, saving to %s", BINARY_FILE_EXTENSION, TEXT_FILE_EXTENSION, file.getAbsolutePath());
         }
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(world);
+            logger.info("Saved world to binary file");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to save world", e);
         }
     }
 
@@ -59,6 +69,8 @@ public class WorldLoader {
      * @param file File to load from.
      */
     public static World loadText(File file) {
+        logger.info("Loading world from text file %s", file.getAbsolutePath());
+
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
             String line = bufferedReader.readLine();
             String[] dimensions = line.split(TEXT_FILE_SEPARATOR + "");
@@ -83,12 +95,14 @@ public class WorldLoader {
             }
             return world;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to load world", e);
         }
         return null;
     }
 
     public static void saveText(World world, File file) {
+        logger.info("Saving world to file %s", file.getAbsolutePath());
+
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
             bufferedWriter.write(String.format("%d%c%d%n", world.getWidth(), TEXT_FILE_SEPARATOR, world.getHeight()));
             for (int y = 0; y < world.getHeight(); y++) {
@@ -103,7 +117,7 @@ public class WorldLoader {
                 bufferedWriter.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to save world to file", e);
         }
     }
 }

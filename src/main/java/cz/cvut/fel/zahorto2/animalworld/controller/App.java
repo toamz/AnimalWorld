@@ -14,6 +14,10 @@ public class App extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/simulator.fxml"));
         Parent root = fxmlLoader.load();
+
+        Simulator controller = fxmlLoader.getController();
+        controller.setParameters(getParameters());
+
         stage.setTitle("Animal World");
         stage.setScene(new Scene(root, 300, 275));
         stage.show();

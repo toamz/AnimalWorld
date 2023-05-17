@@ -1,5 +1,6 @@
 package cz.cvut.fel.zahorto2.animalworld;
 
+@SuppressWarnings("java:S1104")
 public class CoordDouble {
     public double x;
     public double y;
@@ -43,7 +44,7 @@ public class CoordDouble {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null || !(other instanceof CoordDouble otherCoord))
+        if (!(other instanceof CoordDouble otherCoord))
             return false;
         return this.x == otherCoord.x && this.y == otherCoord.y;
     }

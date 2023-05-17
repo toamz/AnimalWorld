@@ -15,7 +15,12 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 
+import javafx.scene.transform.NonInvertibleTransformException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class WorldRenderer extends ResizableCanvas implements EventHandler<Event> {
+    private static final Logger logger = LogManager.getFormatterLogger(WorldRenderer.class.getName());
     AnimationTimer repaintTimer;
 
     public WorldRenderer() {
@@ -54,7 +59,8 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         try {
             Point2D result = transform.inverseTransform(canvasPos.x, canvasPos.y);
             return new CoordDouble(result.getX(), result.getY());
-        } catch (Exception e) {
+        } catch (NonInvertibleTransformException e) {
+            logger.error("Could not invert transform", e);
             return null;
         }
     }
@@ -104,7 +110,7 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         transform.appendTranslation(mousePos.x, mousePos.y);
         transform.appendScale(zoomFactor, zoomFactor);
         transform.appendTranslation(-mousePos.x, -mousePos.y);
-        System.out.println("Zoomed " + zoomFactor);
+        logger.info("Zooming by %s to %s", zoomFactor, mousePos);
     }
 
     CoordDouble dragLast = null;
@@ -116,19 +122,20 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         if (event instanceof MouseEvent mouseEvent) {
             if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED && mouseEvent.isMiddleButtonDown()) {
                 dragLast = new CoordDouble(mouseEvent.getX(), mouseEvent.getY());
+                logger.info("Dragging from %s", dragLast);
             }
             if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED && !mouseEvent.isMiddleButtonDown()) {
+                logger.info("Stopped dragging to %s", dragLast);
                 dragLast = null;
+
             }
             if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED && dragLast != null) {
                 CoordDouble mousePos = new CoordDouble(mouseEvent.getX(), mouseEvent.getY());
                 CoordDouble delta = CoordDouble.subtract(mousePos, dragLast);
                 dragLast = mousePos;
                 transform.prependTranslation(delta.x, delta.y);
+                logger.debug("Dragging by %s", delta);
             }
-            CoordDouble mousePos = new CoordDouble(mouseEvent.getX(), mouseEvent.getY());
-            CoordDouble mapPos = viewToMapCoord(mousePos);
-            System.out.printf("Moved   : %2.2f, %2.2f : %2.2f, %2.2f%n", mousePos.x, mousePos.y, mapPos.x, mapPos.y);
         }
     }
 
