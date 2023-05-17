@@ -2,6 +2,7 @@ package cz.cvut.fel.zahorto2.animalworld.controller;
 
 import cz.cvut.fel.zahorto2.animalworld.model.World;
 import cz.cvut.fel.zahorto2.animalworld.model.WorldLoader;
+import cz.cvut.fel.zahorto2.animalworld.view.StatisticsLabel;
 import cz.cvut.fel.zahorto2.animalworld.view.WorldRenderer;
 import javafx.application.Application;
 import javafx.fxml.FXML;
@@ -20,8 +21,9 @@ import org.apache.logging.log4j.Logger;
 
 public class Simulator {
     private static final Logger logger = LogManager.getFormatterLogger(Simulator.class.getName());
+    @FXML
+    public StatisticsLabel statisticsLabel;
     private World world = new World(20, 20);
-    private final Object worldLock = new Object();
     private final Thread simulationThread = new Thread(this::simulator);
     boolean running = true;
     SimulationSpeed speed = new SimulationSpeed(0);
@@ -42,16 +44,14 @@ public class Simulator {
                 return;
             }
 
-            synchronized (worldLock) {
-                world.getEntityMap().tick();
-                world.getTileGrid().tick();
-            }
+            world.tick();
         }
     }
 
     @FXML
     public void initialize() {
         renderer.setWorld(world);
+        statisticsLabel.setWorld(world);
         simulationThread.setDaemon(true);
         simulationThread.start();
         logger.info("Simulator created");
@@ -170,10 +170,9 @@ public class Simulator {
         speed.speedProperty.set(0);
         World newWorld = WorldLoader.load(file);
         if (newWorld != null) {
-            synchronized (worldLock) {
-                world = newWorld;
-                renderer.setWorld(world);
-            }
+            world = newWorld;
+            renderer.setWorld(world);
+            statisticsLabel.setWorld(world);
         }
     }
 

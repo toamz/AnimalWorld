@@ -19,9 +19,10 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class WorldRenderer extends ResizableCanvas implements EventHandler<Event> {
+public class WorldRenderer extends ResizableCanvas implements EventHandler<Event>, World.TickListener {
     private static final Logger logger = LogManager.getFormatterLogger(WorldRenderer.class.getName());
     AnimationTimer repaintTimer;
+    boolean needsRepaint = true;
 
     public WorldRenderer() {
         this.addEventHandler(ScrollEvent.SCROLL, this);
@@ -35,6 +36,10 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         repaintTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                if (!needsRepaint) {
+                    return;
+                }
+                needsRepaint = false;
                 draw();
                 start();
             }
@@ -139,7 +144,19 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         }
     }
 
+    /**
+     * Link the renderer with a world
+     */
     public void setWorld(World world) {
+        if (this.world != null) {
+            this.world.removeTickListener(this);
+        }
         this.world = world;
+        world.addTickListener(this);
+    }
+
+    @Override
+    public void onWorldTick(World world) {
+        needsRepaint = true;
     }
 }

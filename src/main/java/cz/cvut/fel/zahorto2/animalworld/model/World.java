@@ -5,13 +5,30 @@ import cz.cvut.fel.zahorto2.animalworld.model.tiles.TileType;
 import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * World of the simulation.
  */
 public class World implements Serializable {
+    public interface TickListener {
+        void onWorldTick(World world);
+    }
+    private final ArrayList<TickListener> listeners = new ArrayList<>();
+    public void addTickListener(TickListener listener) {
+        listeners.add(listener);
+    }
+    public void removeTickListener(TickListener listener) {
+        listeners.remove(listener);
+    }
+    private void callTickListeners() {
+        for (TickListener listener : listeners)
+            listener.onWorldTick(this);
+    }
+
     private int width;
     private int height;
+    private int tickCounter = 0;
 
     private EntityMap entityMap;
     private TileGrid tileGrid;
@@ -31,6 +48,13 @@ public class World implements Serializable {
         this.tileGrid = new TileGrid(width, height, TileType.GRASS);
     }
 
+    public void tick() {
+        tileGrid.tick();
+        entityMap.tick();
+        tickCounter++;
+        callTickListeners();
+    }
+
     /**
      * Returns the width of the world.
      * @return the width of the world
@@ -45,6 +69,13 @@ public class World implements Serializable {
      */
     public int getHeight() {
         return height;
+    }
+
+    /**
+     * Gets number of ticks since this world has been created.
+     */
+    public int getTickCount() {
+        return tickCounter;
     }
 
     /**

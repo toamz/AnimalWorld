@@ -40,7 +40,7 @@ public class EntityMap implements Serializable {
      * @return the entity at the given position, or null if there is no entity there
      * @throws IllegalArgumentException if the position is out of bounds
      */
-    public Entity getEntity(int x, int y) {
+    public synchronized Entity getEntity(int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height)
             throw new IllegalArgumentException("Entity position out of bounds");
         return entities[x][y];
@@ -51,8 +51,16 @@ public class EntityMap implements Serializable {
      * @param entity the entity
      * @return the position of the entity, or null if the entity is not in the world
      */
-    public CoordInt getEntityPosition(Entity entity) {
+    public synchronized CoordInt getEntityPosition(Entity entity) {
         return entityPositions.get(entity);
+    }
+
+    /**
+     * Gets array of all entities in the map.
+     * @implNote the value returned is a copy and won't be modified as the map updates to prevent concurrent modification exceptions
+     */
+    public synchronized Entity[] getEntities() {
+        return entityPositions.keySet().toArray(new Entity[0]);
     }
 
     /**
@@ -64,7 +72,7 @@ public class EntityMap implements Serializable {
      * @throws IllegalArgumentException if the position is out of bounds or already occupied
      * @throws NullPointerException if the entity is null
      */
-    public void setEntity(Entity entity, int x, int y) {
+    public synchronized void setEntity(Entity entity, int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height)
             throw new IllegalArgumentException("Entity position out of bounds");
 
@@ -119,7 +127,7 @@ public class EntityMap implements Serializable {
         return validNeighbours.toArray(new CoordInt[0]);
     }
 
-    public CoordInt getRandomEmptyNeighbour(CoordInt position) {
+    public synchronized CoordInt getRandomEmptyNeighbour(CoordInt position) {
         CoordInt[] neighbours = this.getNeighbours(position);
 
         CoordInt[] emptyNeighbours = new CoordInt[4];
