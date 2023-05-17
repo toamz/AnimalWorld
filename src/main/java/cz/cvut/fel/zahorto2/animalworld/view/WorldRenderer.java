@@ -115,6 +115,7 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         transform.appendTranslation(mousePos.x, mousePos.y);
         transform.appendScale(zoomFactor, zoomFactor);
         transform.appendTranslation(-mousePos.x, -mousePos.y);
+        needsRepaint = true;
         logger.info("Zooming by %s to %s", zoomFactor, mousePos);
     }
 
@@ -139,6 +140,7 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
                 CoordDouble delta = CoordDouble.subtract(mousePos, dragLast);
                 dragLast = mousePos;
                 transform.prependTranslation(delta.x, delta.y);
+                needsRepaint = true;
                 logger.debug("Dragging by %s", delta);
             }
         }
