@@ -25,6 +25,7 @@
                 <Slider maxWidth="520" HBox.hgrow="ALWAYS" fx:id="speedSlider" showTickMarks="true" showTickLabels="true" minorTickCount="10" majorTickUnit="10" max="50"/>
             </HBox>
             <HBox HBox.hgrow="NEVER">
+                <Button onAction="#openPropertyEditor" text="Edit properties"/>
                 <Button onAction="#startButtonEvent" text="Start"/>
                 <Button onAction="#stepButtonEvent" text="Step"/>
                 <Button onAction="#stopButtonEvent" text="Stop"/>

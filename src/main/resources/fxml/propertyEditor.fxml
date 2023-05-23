@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<?import cz.cvut.fel.zahorto2.animalworld.view.PropertyEditorRenderer?>
+<?import cz.cvut.fel.zahorto2.animalworld.view.properties.EntityProperties?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="cz.cvut.fel.zahorto2.animalworld.controller.PropertyEditor"
+            prefHeight="400.0" prefWidth="600.0">
+    <stylesheets>
+        <URL value="@/css/simulator.css" />
+    </stylesheets>
+    <center>
+        <PropertyEditorRenderer fx:id="renderer" />
+    </center>
+    <right>
+        <EntityProperties fx:id="entityProperties" />
+    </right>
+</BorderPane>

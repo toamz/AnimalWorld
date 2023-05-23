@@ -41,16 +41,26 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
                 }
                 needsRepaint = false;
                 draw();
-                start();
             }
         };
-        repaintTimer.start();
+        this.sceneProperty().addListener((observable, oldScene, newScene) ->
+                newScene.windowProperty().addListener((observable1, oldWindow, newWindow) -> {
+                            newWindow.setOnCloseRequest(event -> repaintTimer.stop());
+                            repaintTimer.start();
+                        }
+                )
+        );
     }
+
     Affine transform = new Affine();
-    private World world;
+    protected World world;
     void draw() {
         GraphicsContext gc = this.getGraphicsContext2D();
         gc.clearRect(0, 0, this.getWidth(), this.getHeight());
+
+        if (world == null) {
+            return;
+        }
 
         gc.save();
         gc.transform(transform);

@@ -6,11 +6,14 @@ import cz.cvut.fel.zahorto2.animalworld.view.StatisticsLabel;
 import cz.cvut.fel.zahorto2.animalworld.view.WorldRenderer;
 import javafx.application.Application;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Slider;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.converter.DoubleStringConverter;
 
@@ -174,6 +177,33 @@ public class Simulator {
             renderer.setWorld(world);
             statisticsLabel.setWorld(world);
         }
+    }
+
+    public void openPropertyEditor() {
+        logger.info("Opening property editor");
+
+        speed.speedProperty.set(0);
+
+        // load the fxml file and create a new stage for the popup dialog.
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/fxml/propertyEditor.fxml"));
+        try {
+            loader.load();
+        } catch (IOException e) {
+            logger.error("Failed to load property editor", e);
+            return;
+        }
+
+        // Set the controller and show the dialog.
+        PropertyEditor controller = loader.getController();
+        controller.setWorld(world);
+
+        Stage dialogStage = new Stage();
+        dialogStage.setScene(new Scene(loader.getRoot()));
+        dialogStage.setTitle("Property Editor");
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.initOwner(window);
+        dialogStage.showAndWait();
     }
 
     public void setParameters(Application.Parameters parameters) {
