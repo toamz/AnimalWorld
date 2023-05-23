@@ -14,12 +14,31 @@ import java.util.Random;
 public abstract class Animal implements Entity {
     Random random = new Random();
     private int age = 0;
-    private int energy = getStartEnergy();
+    private int energy;
     protected final World world;
 
     protected Animal(World world) {
         this.world = world;
+        energy = getStartEnergy();
     }
+    protected Animal(Animal other) {
+        this.world = other.world;
+        this.age = other.age;
+        this.energy = other.energy;
+        this.maxEnergy = other.maxEnergy;
+        this.startEnergy = other.startEnergy;
+        this.eatEnergy = other.eatEnergy;
+        this.reproduceChance = other.reproduceChance;
+        this.maxAge = other.maxAge;
+        this.reproduceAge = other.reproduceAge;
+    }
+
+    private int maxEnergy = 100;
+    private int startEnergy = 20;
+    private int eatEnergy = 15;
+    private int reproduceChance = 10;
+    private int maxAge = 10000;
+    private int reproduceAge = 1000;
 
     @Override
     public void tick() {
@@ -114,27 +133,50 @@ public abstract class Animal implements Entity {
     public int getAge() {
         return age;
     }
-
     public int getEnergy() {
         return energy;
     }
+    public int getMaxEnergy() {
+        return maxEnergy;
+    }
+    public int getStartEnergy() {
+        return startEnergy;
+    }
+    public int getEatEnergy() {
+        return eatEnergy;
+    }
+    public int getMaxAge() {
+        return maxAge;
+    }
+    public int getReproduceChance() {
+        return reproduceChance;
+    }
+    public int getReproduceAge() {
+        return reproduceAge;
+    }
 
-    protected int getMaxEnergy() {
-        return 100;
+    public void setAge(int age) {
+        this.age = age;
     }
-    protected int getStartEnergy() {
-        return 20;
+    public void setEnergy(int energy) {
+        this.energy = energy;
     }
-    protected int getEatEnergy() {
-        return 15;
+    public void setMaxEnergy(int maxEnergy) {
+        this.maxEnergy = maxEnergy;
     }
-    protected int getReproduceChance() {
-        return 10;
+    public void setStartEnergy(int startEnergy) {
+        this.startEnergy = startEnergy;
     }
-    protected int getMaxAge() {
-        return 10000;
+    public void setEatEnergy(int eatEnergy) {
+        this.eatEnergy = eatEnergy;
     }
-    protected int getReproduceAge() {
-        return 1000;
+    public void setMaxAge(int maxAge) {
+        this.maxAge = maxAge;
+    }
+    public void setReproduceChance(int reproduceChance) {
+        this.reproduceChance = reproduceChance;
+    }
+    public void setReproduceAge(int reproduceAge) {
+        this.reproduceAge = reproduceAge;
     }
 }

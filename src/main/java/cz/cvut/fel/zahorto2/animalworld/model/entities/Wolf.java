@@ -10,28 +10,17 @@ public class Wolf extends Animal {
         return EntityType.WOLF;
     }
 
-    @Override
-    protected int getEatEnergy() {
-        return 200;
-    }
-
-    @Override
-    protected int getMaxEnergy() {
-        return 300;
-    }
-
-    @Override
-    protected int getStartEnergy() {
-        return 100;
-    }
-
-    @Override
-    protected int getReproduceChance() {
-        return 10;
-    }
-
     public Wolf(World world){
         super(world);
+
+        setEatEnergy(200);
+        setMaxEnergy(300);
+        setStartEnergy(100);
+        setReproduceChance(10);
+    }
+
+    public Wolf(Wolf other){
+        super(other);
     }
 
     @Override
@@ -50,6 +39,9 @@ public class Wolf extends Animal {
 
     @Override
     protected Animal createBaby(Animal other) {
-        return new Wolf(world);
+        Wolf child = new Wolf(this);
+        child.setEnergy(getStartEnergy());
+        child.setAge(0);
+        return child;
     }
 }
