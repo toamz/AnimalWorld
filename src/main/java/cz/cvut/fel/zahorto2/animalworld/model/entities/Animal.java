@@ -99,7 +99,7 @@ public abstract class Animal implements Entity {
     /**
      * Try to create a baby.
      * @param other the other animal
-     * @return true if the baby was created, false otherwise
+     * @return animal with the same properties as this animal
      */
     protected abstract Animal createBaby(Animal other);
 
