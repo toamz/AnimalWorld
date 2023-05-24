@@ -27,6 +27,7 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
     private static final Logger logger = LogManager.getFormatterLogger(WorldRenderer.class.getName());
     AnimationTimer repaintTimer;
     boolean needsRepaint = true;
+    private static final double ZOOM_SPEED = 0.001;
 
     public WorldRenderer() {
         this.addEventHandler(ScrollEvent.SCROLL, this);
@@ -151,7 +152,7 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
 
     void handleScrollEvent(ScrollEvent scrollEvent) {
         CoordDouble mousePos = viewToMapCoord(new CoordDouble(scrollEvent.getX(), scrollEvent.getY()));
-        double zoomFactor = scrollEvent.getDeltaY() * 0.001 + 1;
+        double zoomFactor = scrollEvent.getDeltaY() * ZOOM_SPEED + 1;
         transform.appendTranslation(mousePos.x, mousePos.y);
         transform.appendScale(zoomFactor, zoomFactor);
         transform.appendTranslation(-mousePos.x, -mousePos.y);
