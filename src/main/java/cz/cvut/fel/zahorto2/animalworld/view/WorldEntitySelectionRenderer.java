@@ -13,10 +13,16 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-public class PropertyEditorRenderer extends WorldRenderer{
-    private final Logger logger = LogManager.getFormatterLogger(PropertyEditorRenderer.class.getName());
+/**
+ * Renderer for the world and entities with selection of entities.
+ */
+public class WorldEntitySelectionRenderer extends WorldRenderer{
+    private final Logger logger = LogManager.getFormatterLogger(WorldEntitySelectionRenderer.class.getName());
     Entity selectedEntity;
 
+    /**
+     * Listener for entity selection.
+     */
     public interface EntitySelectionListener {
         void onEntitySelected(Entity entity);
     }
@@ -33,7 +39,7 @@ public class PropertyEditorRenderer extends WorldRenderer{
         }
     }
 
-    public PropertyEditorRenderer() {
+    public WorldEntitySelectionRenderer() {
         super();
     }
 

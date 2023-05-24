@@ -3,6 +3,9 @@ package cz.cvut.fel.zahorto2.animalworld.model.entities;
 import cz.cvut.fel.zahorto2.animalworld.CoordInt;
 import cz.cvut.fel.zahorto2.animalworld.model.World;
 
+/**
+ * Wolf eats sheep and reproduces.
+ */
 public class Wolf extends Animal {
 
     @Override

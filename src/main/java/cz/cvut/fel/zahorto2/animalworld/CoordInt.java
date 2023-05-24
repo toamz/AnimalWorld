@@ -1,5 +1,8 @@
 package cz.cvut.fel.zahorto2.animalworld;
 
+/**
+ * 2D coordinates with integer precision.
+ */
 public class CoordInt {
     public int x;
     public int y;

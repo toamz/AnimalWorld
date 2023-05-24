@@ -3,6 +3,9 @@ package cz.cvut.fel.zahorto2.animalworld.view.properties;
 import cz.cvut.fel.zahorto2.animalworld.model.entities.Animal;
 import cz.cvut.fel.zahorto2.animalworld.model.entities.Entity;
 
+/**
+ * Class for accessing properties of an animal.
+ */
 @SuppressWarnings("java:S1192")
 public class AnimalPropertyAccessor implements EntityPropertyAccessor{
     public String[] getIntProperties() {

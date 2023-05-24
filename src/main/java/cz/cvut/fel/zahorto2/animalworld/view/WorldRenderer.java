@@ -19,6 +19,10 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Renderer for the world and entities.
+ * Handles middle mouse button panning and scrolling with support for smooth scroll (usually on touchpads).
+ */
 public class WorldRenderer extends ResizableCanvas implements EventHandler<Event>, World.TickListener {
     private static final Logger logger = LogManager.getFormatterLogger(WorldRenderer.class.getName());
     AnimationTimer repaintTimer;
@@ -30,7 +34,7 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         this.addEventHandler(MouseEvent.MOUSE_DRAGGED, this);
         this.addEventHandler(MouseEvent.MOUSE_PRESSED, this);
         this.addEventHandler(MouseEvent.MOUSE_RELEASED, this);
-        transform.appendScale(10, 10);
+        transform.appendScale(10, 10); // default zoom - 10 pixels per tile
 
         // Timer that repaints the canvas every frame
         repaintTimer = new AnimationTimer() {
@@ -43,6 +47,8 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
                 draw();
             }
         };
+
+        // Make sure it stops when the window is closed, otherwise it would keep running in the background and cause a memory leak
         this.sceneProperty().addListener((observable, oldScene, newScene) ->
                 newScene.windowProperty().addListener((observable1, oldWindow, newWindow) -> {
                             newWindow.setOnCloseRequest(event -> repaintTimer.stop());
@@ -52,8 +58,9 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         );
     }
 
-    Affine transform = new Affine();
+    Affine transform = new Affine(); // View transform
     protected World world;
+
     void draw() {
         GraphicsContext gc = this.getGraphicsContext2D();
         gc.clearRect(0, 0, this.getWidth(), this.getHeight());
@@ -70,6 +77,9 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         gc.restore();
     }
 
+    /**
+     * Converts a canvas position to a map coordinate using the current view transform.
+     */
     CoordDouble viewToMapCoord(CoordDouble canvasPos) {
         try {
             Point2D result = transform.inverseTransform(canvasPos.x, canvasPos.y);
@@ -130,6 +140,11 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
     }
 
     CoordDouble dragLast = null;
+
+    /**
+     * Handles events from the canvas. Currently only handles scrolling and middle mouse button panning.
+     * @param event the event which occurred
+     */
     @Override
     public void handle(Event event) {
         if (event instanceof ScrollEvent scrollEvent) {
@@ -140,7 +155,7 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
                 dragLast = new CoordDouble(mouseEvent.getX(), mouseEvent.getY());
                 logger.info("Dragging from %s", dragLast);
             }
-            if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED && !mouseEvent.isMiddleButtonDown()) {
+            if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED && dragLast != null &&!mouseEvent.isMiddleButtonDown()) {
                 logger.info("Stopped dragging to %s", dragLast);
                 dragLast = null;
 
@@ -167,6 +182,9 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         world.addTickListener(this);
     }
 
+    /**
+     * Updates the view when the world ticks
+     */
     @Override
     public void onWorldTick(World world) {
         needsRepaint = true;

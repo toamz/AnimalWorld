@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleFloatProperty;
 /**
  * Class for controlling the speed of the simulation.
  * The speed is measured in ticks per second.
+ * Use {@link #speedProperty} to set the speed.
  */
 public class SimulationSpeed {
     public final SimpleFloatProperty speedProperty = new SimpleFloatProperty();
@@ -18,12 +19,22 @@ public class SimulationSpeed {
             }
         });
     }
+
+    /**
+     * Do a single step of the simulation.
+     */
     public synchronized void singleStep()
     {
         this.speedProperty.set(0);
         this.singleStep = true;
         notifyAll();
     }
+
+    /**
+     * Wait until the next tick.
+     * If the speed is changed during the wait, the sleeping time is recalculated to match the new speed.
+     * @throws InterruptedException if the thread is interrupted
+     */
     public synchronized void delay() throws InterruptedException
     {
         long start = System.currentTimeMillis();

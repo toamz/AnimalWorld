@@ -22,21 +22,27 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Controller for the main window
+ */
 public class Simulator {
     private static final Logger logger = LogManager.getFormatterLogger(Simulator.class.getName());
     @FXML
     public StatisticsLabel statisticsLabel;
     private World world = new World(20, 20);
-    private final Thread simulationThread = new Thread(this::simulator);
-    boolean running = true;
-    SimulationSpeed speed = new SimulationSpeed(0);
+    private final Thread simulationThread = new Thread(this::simulator); // thread for the simulation
+    boolean running = true; // whether the simulation should keep running
+    SimulationSpeed speed = new SimulationSpeed(0); // speed manager for the simulation thread
     @FXML
     public WorldRenderer renderer;
     @FXML
     public Slider speedSlider;
-    private final FileChooser fileChooser = new FileChooser();
+    private final FileChooser fileChooser = new FileChooser(); // file chooser for loading and saving worlds
     private Window window;
 
+    /**
+     * Main loop for the simulation thread
+     */
     private void simulator() {
         while (running) {
             try {
@@ -65,6 +71,7 @@ public class Simulator {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("World text files (*.%s)".formatted(text), "*.%s".formatted(text)));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All files (*.*)", "*.*"));
 
+        // link scene after it is loaded
         renderer.sceneProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 linkSceneAfterLoad(newValue);
@@ -74,6 +81,9 @@ public class Simulator {
         setupSpeedSlider();
     }
 
+    /**
+     * Set up the speed slider labels and link it to the speed manager
+     */
     private void setupSpeedSlider() {
         speedSlider.setLabelFormatter(new DoubleStringConverter(){
             @Override
@@ -104,6 +114,9 @@ public class Simulator {
         });
     }
 
+    /**
+     * Link scene drag and drop events and store reference to the window
+     */
     void linkSceneAfterLoad(Scene scene){
         window = scene.getWindow();
 
@@ -194,7 +207,7 @@ public class Simulator {
             return;
         }
 
-        // Set the controller and show the dialog.
+        // Set up the controller and show the dialog.
         PropertyEditor controller = loader.getController();
         controller.setWorld(world);
 
@@ -203,6 +216,8 @@ public class Simulator {
         dialogStage.setTitle("Property Editor");
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.initOwner(window);
+
+        // Wait for the dialog to close
         dialogStage.showAndWait();
     }
 

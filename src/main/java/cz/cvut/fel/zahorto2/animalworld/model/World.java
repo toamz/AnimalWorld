@@ -28,7 +28,7 @@ public class World implements Serializable {
 
     private int width;
     private int height;
-    private int tickCounter = 0;
+    private int tickCounter = 0; // number of ticks since this world has been created/loaded
 
     private EntityMap entityMap;
     private TileGrid tileGrid;

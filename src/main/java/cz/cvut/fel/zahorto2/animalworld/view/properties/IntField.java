@@ -3,6 +3,10 @@ package cz.cvut.fel.zahorto2.animalworld.view.properties;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.TextField;
 
+/**
+ * TextField which only accepts integer values.
+ * Use {@link #valueProperty} to get or set the value of the field.
+ */
 @SuppressWarnings("java:S110")
 public class IntField extends TextField {
     public SimpleIntegerProperty valueProperty = new SimpleIntegerProperty();

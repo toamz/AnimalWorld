@@ -3,6 +3,9 @@ package cz.cvut.fel.zahorto2.animalworld.model.entities;
 import cz.cvut.fel.zahorto2.animalworld.CoordInt;
 import cz.cvut.fel.zahorto2.animalworld.model.World;
 
+/**
+ * Sheep eats grass and reproduces.
+ */
 public class Sheep extends Animal {
     public Sheep(World world) {
         super(world);

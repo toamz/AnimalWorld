@@ -1,5 +1,8 @@
 package cz.cvut.fel.zahorto2.animalworld;
 
+/**
+ * 2D coordinates with double precision.
+ */
 @SuppressWarnings("java:S1104")
 public class CoordDouble {
     public double x;

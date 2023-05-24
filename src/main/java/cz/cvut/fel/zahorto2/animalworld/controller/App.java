@@ -16,10 +16,10 @@ public class App extends Application {
         Parent root = fxmlLoader.load();
 
         Simulator controller = fxmlLoader.getController();
-        controller.setParameters(getParameters());
+        controller.setParameters(getParameters()); // pass command line arguments to the controller
 
         stage.setTitle("Animal World");
-        stage.setScene(new Scene(root, 300, 275));
+        stage.setScene(new Scene(root, 800, 600));
         stage.show();
     }
 }

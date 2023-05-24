@@ -19,6 +19,7 @@ public class WorldLoader {
 
     /**
      * Loads a world from a binary file.
+     * If the file is not a binary world file, tries to load it as a text file.
      * @param file File to load from.
      * @return Loaded world.
      */
@@ -38,7 +39,9 @@ public class WorldLoader {
     }
 
     /**
-     * Saves a world to a binary file.
+     * Saves a world to a file.
+     * If the file name does not end with {@link #BINARY_FILE_EXTENSION} or {@link #TEXT_FILE_EXTENSION},
+     * saves to a file with the extension {@link #BINARY_FILE_EXTENSION}.
      * @param world World to save.
      * @param file File to save to.
      */
@@ -100,6 +103,9 @@ public class WorldLoader {
         return null;
     }
 
+    /**
+     * Saves a world to a text file.
+     */
     public static void saveText(World world, File file) {
         logger.info("Saving world to file %s", file.getAbsolutePath());
 
