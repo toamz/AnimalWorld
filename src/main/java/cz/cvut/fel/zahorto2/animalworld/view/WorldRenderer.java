@@ -71,9 +71,24 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
 
         gc.save();
         gc.transform(transform);
-        drawTiles(gc);
+
+
+        gc.save();
+        CoordDouble topLeft = viewToMapCoord(new CoordDouble(0, 0));
+        CoordDouble bottomRight = viewToMapCoord(new CoordDouble(getWidth(), getHeight()));
+
+        int minX = (int) Math.min(Math.max(topLeft.x, 0), world.getWidth());
+        int minY = (int) Math.min(Math.max(topLeft.y, 0), world.getHeight());
+
+        int maxX = (int) Math.min(Math.max(bottomRight.x + 1, 0), world.getWidth());
+        int maxY = (int) Math.min(Math.max(bottomRight.y + 1, 0), world.getHeight());
+
+        logger.debug("Drawing from %d,%d to %d,%d", minX, minY, maxX, maxY);
+
+
+        drawTiles(gc, minX, minY, maxX, maxY);
         drawGrid(gc);
-        drawEntities(gc);
+        drawEntities(gc, minX, minY, maxX, maxY);
         gc.restore();
     }
 
@@ -101,32 +116,37 @@ public class WorldRenderer extends ResizableCanvas implements EventHandler<Event
         }
     }
 
-    void drawTiles(GraphicsContext gc) {
-        gc.save();
-        for (int x = 0; x < world.getWidth(); x++) {
-            gc.save();
-            for (int y = 0; y < world.getHeight(); y++) {
+    void drawTiles(GraphicsContext gc, int minX, int minY, int maxX, int maxY) {
+        int currentX = 0;
+        int currentY = 0;
+        for (int x = minX; x < maxX; x++) {
+            for (int y = minY; y < maxY; y++) {
+                gc.translate((double) x - currentX, (double) y - currentY);
+                currentX = x;
+                currentY = y;
                 TileRenderer.render(world.getTileGrid().getTile(x, y), gc);
-                gc.translate(0, 1);
             }
-            gc.restore();
-            gc.translate(1, 0);
         }
         gc.restore();
     }
 
-    void drawEntities(GraphicsContext gc) {
-        for (int x = 0; x < world.getWidth(); x++) {
-            for (int y = 0; y < world.getHeight(); y++) {
+    void drawEntities(GraphicsContext gc, int minX, int minY, int maxX, int maxY) {
+        gc.save();
+
+        int currentX = 0;
+        int currentY = 0;
+        for (int x = minX; x < maxX; x++) {
+            for (int y = minY; y < maxY; y++) {
                 Entity entity = world.getEntityMap().getEntity(x, y);
                 if (entity == null) continue;
 
-                gc.save();
-                gc.translate(x, y);
+                gc.translate((double) x - currentX, (double) y - currentY);
+                currentX = x;
+                currentY = y;
                 EntityRenderer.render(entity, gc);
-                gc.restore();
             }
         }
+        gc.restore();
     }
 
     void handleScrollEvent(ScrollEvent scrollEvent) {
