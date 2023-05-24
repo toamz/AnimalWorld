@@ -24,8 +24,8 @@ public class WorldLoader {
      * @return Loaded world.
      */
     public static World load(File file) {
-        try (FileInputStream fileInputStream = new FileInputStream(file)) {
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+        try (FileInputStream fileInputStream = new FileInputStream(file);
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
             World world = (World) objectInputStream.readObject();
             logger.info("Loaded world from binary file");
             return world;
@@ -58,8 +58,8 @@ public class WorldLoader {
             logger.warn("File name did not end with %s or %s, saving to %s", BINARY_FILE_EXTENSION, TEXT_FILE_EXTENSION, file.getAbsolutePath());
         }
 
-        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file);
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
             objectOutputStream.writeObject(world);
             logger.info("Saved world to binary file");
         } catch (IOException e) {
@@ -74,7 +74,8 @@ public class WorldLoader {
     public static World loadText(File file) {
         logger.info("Loading world from text file %s", file.getAbsolutePath());
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+        try (FileReader fileReader = new FileReader(file);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             String line = bufferedReader.readLine();
             String[] dimensions = line.split(TEXT_FILE_SEPARATOR + "");
             int width = Integer.parseInt(dimensions[0]);
@@ -112,7 +113,8 @@ public class WorldLoader {
     public static void saveText(World world, File file) {
         logger.info("Saving world to file %s", file.getAbsolutePath());
 
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
+        try (FileWriter fileWriter = new FileWriter(file);
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
             bufferedWriter.write(String.format("%d%c%d%n", world.getWidth(), TEXT_FILE_SEPARATOR, world.getHeight()));
             for (int y = 0; y < world.getHeight(); y++) {
                 for (int x = 0; x < world.getWidth(); x++) {
