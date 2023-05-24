@@ -87,8 +87,11 @@ public class WorldLoader {
             World world = new World(width, height);
             for (int y = 0; y < height; y++) {
                 line = bufferedReader.readLine();
+                if (line == null) { // leave the world as default tiles if file ends too soon
+                    break;
+                }
                 String[] tiles = line.split(TEXT_FILE_SEPARATOR + "", -1);
-                for (int x = 0; x < width; x++) {
+                for (int x = 0; x < Math.min(width, tiles.length / 2); x++) {
                     world.getTileGrid().setTile(TileType.valueOf(tiles[x * 2]).createTile(), x, y);
                     String entity = tiles[x * 2 + 1];
                     if (!entity.equals("")) {
