@@ -14,7 +14,7 @@ public class World implements Serializable {
     public interface TickListener {
         void onWorldTick(World world);
     }
-    private final ArrayList<TickListener> listeners = new ArrayList<>();
+    private ArrayList<TickListener> listeners = new ArrayList<>();
     public void addTickListener(TickListener listener) {
         listeners.add(listener);
     }
@@ -106,6 +106,8 @@ public class World implements Serializable {
 
         width = tileGrid.getWidth();
         height = tileGrid.getHeight();
+
+        listeners = new ArrayList<>();
 
         assert width == entityMap.getWidth();
         assert height == entityMap.getHeight();
