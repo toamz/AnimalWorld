@@ -1,24 +1,33 @@
-# Projekt
+# Project
 
-Simulátor zvířat pohybujících se po mřížce.
-Mapa je složena z polí vody nebo trávy.
+Simulator of animals randomly moving on a grid world.
+Map is made out of tiles of grass or water.
 
-## Funkce
+## Functions
 
-- Editor mapy
-	- Nastavit typ polí (voda, tráva)
-	- Umístit zvířata
-	- Možnost načíst/uložit mapu (včetně zvířat) z vlastního typu souboru
-	- Možnost načíst typ polí z obrázku (?)
-- Simulátor
-	- Rychlosti přehrávání:
-		- Po krocích
-		- Automaticky s rychlostí N kroků za vteřinu
-		- Maximální rychlostí s renderováním
-		- Maximální rychlostí bez renderování
-	- Simulace běží v **odděleném threadu**
-	- Uložení stavu simulace do souboru
+- Simulator
+  - Variable simulation speed:
+    - Stepping
+    - Auto-step with speed from one step per second up
+    - Max possible speed
+    - Paused
+	- Simulation is running in a separate thread, and should not slow down rendering
+	- World state is savable in:
+  	- binary format, holding complete state of entities and tiles (.world)
+  	- text CSV file separated with semicolumns (;) (.tworld)
+    	- can be edited visually with Excel or similar software with automatic color highlighting
+    	- does NOT hold complete state of the world, only world size, animal position and tile types
+  		- (sample file "sample-world.tworld")
+- Entity editor
+  - Entities can be selected and their properties modified
+  - Properties of single entity can be copied to entities of same type with a button
+- Application supports commandline arguments:
+  - '--speed=\<NUMBER>'
+  - 'file/to/open.world'
+  - for example: java -jar animalworld-1.0-SNAPSHOT-jar-with-dependencies.jar --speed=10 ../sample-world.tworld
 
-## Architektura
+# Build
 
-Jelikož zvířata se mohou pohybovat pouze po mřížce, je jejich poloha uložena v objektu World.
+Project is created with Maven.
+Open in any IDE and execute Maven "package".
+Two JAR files will be created - one with and one without dependencies.
